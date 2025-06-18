@@ -1,13 +1,11 @@
 <?php
 session_start();
 
-// Cek apakah user sudah login (ada username dan role)
 if (!isset($_SESSION['username']) || !isset($_SESSION['role'])) {
     header("Location: pages/user/login.php");
     exit;
 }
 
-// Tampilkan pesan sukses login jika ada
 if (isset($_SESSION['login_success'])) {
     echo "<script>alert('" . $_SESSION['login_success'] . "');</script>";
     unset($_SESSION['login_success']);

@@ -1,10 +1,8 @@
 <?php
 session_start();
 
-// Hapus semua session
 $_SESSION = [];
 
-// Hapus cookie session
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(
@@ -18,9 +16,7 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-// Hancurkan sesi
 session_destroy();
 
-// Arahkan ke halaman login
 header("Location: ../../pages/user/login.php");
 exit;
