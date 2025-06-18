@@ -1,6 +1,13 @@
 <?php
 session_start();
 
+// Cek apakah user sudah login (ada username dan role)
+if (!isset($_SESSION['username']) || !isset($_SESSION['role'])) {
+    header("Location: pages/user/login.php");
+    exit;
+}
+
+// Tampilkan pesan sukses login jika ada
 if (isset($_SESSION['login_success'])) {
     echo "<script>alert('" . $_SESSION['login_success'] . "');</script>";
     unset($_SESSION['login_success']);
@@ -86,7 +93,7 @@ $request_uri = $_SERVER['REQUEST_URI'];
                             alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block"><?= $_SESSION['username']; ?></a>
+                        <a href="#" class="d-block"><?= htmlspecialchars($_SESSION['username'] ?? 'Guest') ?></a>
                     </div>
                 </div>
                 <nav class="mt-2">
@@ -129,7 +136,7 @@ $request_uri = $_SERVER['REQUEST_URI'];
                         </li>
 
                         <li class="nav-item">
-                            <a href="/kabupaten-kota/proses/user/proses_logout.php" onclick="return confirm('Apakah Anda yakin ingin logout?')" class=" nav-link">
+                            <a href="proses/user/proses_logout.php" onclick="return confirm('Apakah Anda yakin ingin logout?')" class="nav-link">
                                 <i class="nav-icon fas fa-sign-out-alt"></i>
                                 <p>Logout</p>
                             </a>
@@ -141,6 +148,11 @@ $request_uri = $_SERVER['REQUEST_URI'];
 
         <div class="content-wrapper">
             <?php
+            if (!isset($_SESSION['role'])) {
+                header("Location: pages/user/login.php");
+                exit;
+            }
+
             if (isset($_GET['page'])) {
                 $page = $_GET['page'];
                 switch ($page) {
@@ -168,18 +180,10 @@ $request_uri = $_SERVER['REQUEST_URI'];
                         }
                         break;
                     case 'tambah_user':
-                        if ($_SESSION['role'] == 'Admin') {
-                            include 'pages/user/tambah_user.php';
-                        } else {
-                            include 'pages/error/401.php';
-                        }
+                        include 'pages/user/tambah_user.php';
                         break;
                     case 'ubah_user':
-                        if ($_SESSION['role'] == 'Admin') {
-                            include 'pages/user/ubah_user.php';
-                        } else {
-                            include 'pages/error/401.php';
-                        }
+                        include 'pages/user/ubah_user.php';
                         break;
                     default:
                         include 'pages/error/404.php';
@@ -190,6 +194,7 @@ $request_uri = $_SERVER['REQUEST_URI'];
             }
             ?>
         </div>
+
         <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">
                 Developed By : Wawan Saputra
